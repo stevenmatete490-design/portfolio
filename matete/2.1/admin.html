@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiVault | Engineering Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --card-bg: #1f1f1f;
+            --primary: #4caf50;
+            --accent: #2196F3;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --border: #333333;
+        }
+
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-dark); color: var(--text-main); }
+        
+        /* --- Layout --- */
+        .dashboard { display: none; min-height: 100vh; }
+        .sidebar { width: 260px; background: #1a1a1a; border-right: 1px solid var(--border); padding: 1.5rem; position: fixed; height: 100vh; }
+        .main-content { flex: 1; margin-left: 260px; padding: 2rem; max-width: 1200px; }
+
+        .logo { font-size: 1.8rem; font-weight: 700; margin-bottom: 2.5rem; color: var(--primary); }
+        .logo span { color: white; }
+        
+        .menu a { display: block; color: var(--text-muted); text-decoration: none; margin: 1.2rem 0; padding: 0.7rem; border-radius: 8px; transition: 0.3s; }
+        .menu a.active, .menu a:hover { background: var(--border); color: #fff; }
+
+        /* --- Components --- */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+        .card h3 { margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+        /* --- Inputs & Buttons --- */
+        input[type="text"], input[type="password"], textarea { 
+            width: 100%; background: #121212; color: #fff; border: 1px solid var(--border); 
+            padding: 10px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box;
+        }
+        .upload-btn { 
+            width: 100%; padding: 12px; background: var(--primary); color: white; 
+            border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s;
+        }
+        .upload-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* --- Mastery Tracker --- */
+        .progress-bar-bg { background: #333; height: 10px; border-radius: 5px; overflow: hidden; margin: 15px 0; }
+        #growth-fill { height: 100%; background: var(--primary); transition: width 0.5s ease-in-out; }
+
+        /* --- Calendar --- */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .calendar-day { padding: 8px; background: #2a2a2a; border-radius: 4px; font-size: 0.75rem; }
+        .today { background: var(--primary); font-weight: bold; }
+
+        /* --- Upload List --- */
+        .uploaded-list { margin-top: 1rem; max-height: 120px; overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px; }
+        .cert-item { font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid #2a2a2a; color: var(--text-muted); }
+
+        /* --- Login Modal --- */
+        #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { background: var(--card-bg); padding: 2.5rem; border-radius: 12px; width: 320px; text-align: center; border: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SECTION -->
+<div id="login-modal">
+    <div class="login-box">
+        <div class="logo">Certi<span>Vault</span></div>
+        <p class="meta">Engineering Admin Access</p>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="upload-btn" onclick="handleLogin()">Login to Dashboard</button>
+        <p id="login-error" style="color:#ff5252; font-size: 0.8rem; margin-top: 10px; display:none;">Invalid credentials</p>
+    </div>
+</div>
+
+<!-- DASHBOARD SECTION -->
+<div class="dashboard" id="admin-dashboard">
+    <aside class="sidebar">
+        <div class="logo">Certi<span>Vault</span></div>
+        <nav class="menu">
+            <a href="#" class="active">📊 Overview</a>
+            <a href="#">📂 All Certificates</a>
+            <a href="#">⚙️ Settings</a>
+            <a href="index.html" style="margin-top: 4rem; color: var(--accent);">🌐 View Public Site</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header style="margin-bottom: 2.5rem;">
+            <h2>System Administrator Dashboard</h2>
+            <p class="meta">Welcome back, <strong style="color: white;">Steven Matete</strong>. Your technical leverage is increasing.</p>
+        </header>
+
+        <!-- TOP TOOLS: GROWTH & NOTES -->
+        <section class="grid-container">
+            <!-- GROWTH TRACKER -->
+            <div class="card">
+                <h3>📈 Mastery Progress</h3>
+                <p class="meta">Tracking your career trajectory</p>
+                <div class="progress-bar-bg">
+                    <div id="growth-fill" style="width: 0%;"></div>
+                </div>
+                <p id="growth-status" style="font-size: 0.9rem;">0% Leveling up...</p>
+                <button class="upload-btn" style="background: var(--accent); margin-top: 10px;" onclick="updateGrowth()">Log Skill Improvement</button>
+            </div>
+
+            <!-- NOTES -->
+            <div class="card">
+                <h3>📝 Technical Journal</h3>
+                <p class="meta">Store snippets or career wins</p>
+                <textarea id="personal-notes" placeholder="What technical challenge did you solve today?"></textarea>
+                <button class="upload-btn" onclick="saveNote()">Sync Journal</button>
+            </div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>📅 Exam & Certification Roadmap</h3>
+                <div id="month-display" style="font-weight: 600;"></div>
+            </div>
+            <div class="calendar-grid" id="calendar-header" style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">
+                <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+            </div>
+            <div class="calendar-grid" id="calendar-body"></div>
+        </section>
+
+        <!-- UPLOAD SECTION -->
+        <h3>📤 Certificate Repositories</h3>
+        <section class="grid-container">
+            <!-- AI CATEGORY -->
+            <div class="card">
+                <h3>🤖 AI & ML</h3>
+                <input type="file" class="file-input" id="file-ai" accept=".pdf">
+                <input type="text" id="desc-ai" placeholder="Description (e.g. Stanford ML Spec)">
+                <button class="upload-btn" onclick="uploadCert('ai')">Upload to Vault</button>
+                <div class="uploaded-list" id="list-ai"></div>
+            </div>
+
+            <!-- CLOUD CATEGORY -->
+            <div class="card">
+                <h3>☁️ Cloud Computing</h3>
+                <input type="file" class="file-input" id="file-cloud" accept=".pdf">
+                <input type="text" id="desc-cloud" placeholder="Description (e.g. AWS Solutions Architect)">
+                <button class="upload-btn" onclick="uploadCert('cloud')">Upload to Vault</button>
+                <div class="uploaded-list" id="list-cloud"></div>
+            </div>
+
+            <!-- COMMUNICATION -->
+            <div class="card">
+                <h3>💬 Communication</h3>
+                <input type="file" class="file-input" id="file-comm" accept=".pdf">
+                <input type="text" id="desc-comm" placeholder="Description">
+                <button class="upload-btn" onclick="uploadCert('communication')">Upload to Vault</button>
+                <div class="uploaded-list" id="list-communication"></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // --- AUTHENTICATION ---
+    function handleLogin() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        if(user === "steven matete" && pass === "1234") {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'flex';
+            initDashboard();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+        }
+    }
+
+    // --- INITIALIZE DASHBOARD ---
+    function initDashboard() {
+        renderGrowth();
+        renderCalendar();
+        loadNotes();
+        loadUploadedCertificates();
+    }
+
+    // --- GROWTH TRACKER ---
+    function updateGrowth() {
+        let val = parseInt(localStorage.getItem('growth_score')) || 45;
+        if(val < 100) val += 5;
+        localStorage.setItem('growth_score', val);
+        renderGrowth();
+    }
+
+    function renderGrowth() {
+        const val = localStorage.getItem('growth_score') || 45;
+        document.getElementById('growth-fill').style.width = val + '%';
+        document.getElementById('growth-status').innerText = val + '% towards Technical Master';
+    }
+
+    // --- JOURNAL ---
+    function saveNote() {
+        const note = document.getElementById('personal-notes').value;
+        localStorage.setItem('admin_journal', note);
+        alert("Journal entry saved to local storage.");
+    }
+
+    function loadNotes() {
+        document.getElementById('personal-notes').value = localStorage.getItem('admin_journal') || "";
+    }
+
+    // --- CALENDAR ---
+    function renderCalendar() {
+        const now = new Date();
+        const grid = document.getElementById('calendar-body');
+        const monthDisplay = document.getElementById('month-display');
+        
+        monthDisplay.innerText = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+        
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+        grid.innerHTML = "";
+        for(let i=0; i<firstDay; i++) grid.innerHTML += '<div></div>';
+        for(let d=1; d<=daysInMonth; d++) {
+            const todayClass = d === now.getDate() ? 'today' : '';
+            grid.innerHTML += `<div class="calendar-day ${todayClass}">${d}</div>`;
+        }
+    }
+
+    // --- UPLOAD LOGIC ---
+    function uploadCert(cat) {
+        const fileInput = document.getElementById(`file-${cat === 'communication' ? 'comm' : cat}`);
+        const descInput = document.getElementById(`desc-${cat === 'communication' ? 'comm' : cat}`);
+        const file = fileInput.files[0];
+
+        if(!file) return alert("Please select a PDF file.");
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const certs = JSON.parse(localStorage.getItem('certificates')) || [];
+            certs.push({
+                category: cat,
+                name: file.name,
+                desc: descInput.value,
+                data: e.target.result
+            });
+            localStorage.setItem('certificates', JSON.stringify(certs));
+            descInput.value = "";
+            fileInput.value = "";
+            loadUploadedCertificates();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadUploadedCertificates() {
+        const certs = JSON.parse(localStorage.getItem('certificates')) || [];
+        const categories = ['ai', 'cloud', 'communication'];
+        
+        categories.forEach(cat => {
+            const list = document.getElementById(`list-${cat === 'communication' ? 'comm' : cat}`);
+            list.innerHTML = "";
+            const filtered = certs.filter(c => c.category === cat);
+            
+            if(filtered.length === 0) {
+                list.innerHTML = '<div class="cert-item">No files uploaded.</div>';
+            } else {
+                filtered.forEach(c => {
+                    list.innerHTML += `<div class="cert-item">📄 ${c.name.substring(0,20)}...</div>`;
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

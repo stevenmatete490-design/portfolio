@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steven Matete | Software Engineer</title>
+    <meta name="description" content="Steven Matete - Software Engineer Portfolio. Projects, skills, and contact.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">STEVEN<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="project.html" class="active">projects </a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li> <a href="cert.html">certificates</a></li>
+           
+
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Hi, I'm <span>Steven Matete</span></h1>
+            <p>As a passionate computer scientist, I strive to harness emerging technologies and innovative solutions to drive meaningful impact in every project I undertake. My core aspirations revolve around mastering cutting-edge domains such as artificial intelligence, cloud computing, and scalable software architecture, positioning myself as a versatile problem-solver capable of bridging the gap between technical complexity and business value. I leverage strengths in algorithmic thinking, full-stack development, data analysis, and adaptive learning to deliver robust and efficient solutions. Guided by pillars of continuous learning, cross-disciplinary collaboration, ethical technology application, and measurable impact, I aim to accelerate organizational growth while advancing my professional journey, making me an ideal candidate for roles that demand both technical excellence and strategic insight.</p>
+            <div class="hero-actions">
+                <a href="#projects" class="cta">View My Work</a>
+                <a href="cv.pdf" download class="btn-cv">📄 Download CV</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BIO GRID (Skills & Experience Side-by-Side) -->
+    <section class="bio-section">
+        <div class="bio-grid">
+            <!-- Left Column: Skills -->
+            <div class="bio-column">
+                <h2>Tech Stack</h2>
+                <div class="skills-grid">
+                    <span>JavaScript</span><span>React</span><span>Node.js</span>
+                    <span>Python</span><span>SQL</span><span>Git</span>
+                </div>
+                <div class="learning-journey">
+                    <h3>Learning Journey</h3>
+                    <div class="progress-item">
+                        <div class="progress-label"><span>JavaScript</span><span>80%</span></div>
+                        <div class="bar"><div class="fill" style="width: 80%;"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Experience -->
+            <div class="bio-column">
+                <h2>Experience</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3>Freelancer</h3>
+                        <p class="date">2023 - Present</p>
+                        <p>Built responsive websites and handled full-stack client projects using modern frameworks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="projects" id="projects">
+        <h2 class="section-title">Selected Projects</h2>
+        <div class="project-grid">
+            <div class="card">
+                <h3>System Architecture</h3>
+                <p>Developing scalable backend solutions with optimized database structures.</p>
+            </div>
+            <div class="card">
+                <h3>Modern Web Apps</h3>
+                <p>Creating responsive and interactive user interfaces using modern frameworks.</p>
+            </div>
+            <div class="card">
+                <h3>Task Manager App</h3>
+                <p>Full-stack management system with authentication.</p>
+                <p class="tech-stack">React • Node.js • MongoDB</p>
+                <div class="card-links">
+                    <a href="#">Demo →</a>
+                    <a href="#">GitHub →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="contact-card">
+                <h2>Let's work together</h2>
+                <a href="mailto:steven2025matete@gmail.com" class="email-link">steven2025matete@gmail.com</a>
+                <div class="phone-container">
+                    <span class="phone-label">Direct Line</span>
+                    <a href="tel:+254701164040" class="phone-link">+254 701 164 040</a>
+                </div>
+                <a href="https://wa.me/254701164040" target="_blank" class="btn-whatsapp">Chat on WhatsApp</a>
+                <div class="socials">
+                    <a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter</a>
+                </div>
+            </div>
+
+            <form class="contact-form">
+                <h3>Message Me</h3>
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Email" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" class="btn-submit">Send Message</button>
+            </form>
+        </div>
+        <p class="copyright">© 2025 Steven Matete • Built with Passion</p>
+    </footer>
+<script src="https://unpkg.com/scrollreveal"></script>
+<script>
+    ScrollReveal().reveal('.card, .bio-column, .contact-card', { 
+        delay: 200, 
+        distance: '50px',
+        interval: 100,
+        origin: 'bottom' 
+    });
+</script>
+</body>
+</html>

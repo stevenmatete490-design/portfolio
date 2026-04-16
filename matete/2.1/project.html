@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#0a0a0a;color:#fff;overflow-x:hidden}
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #111; /* Dark background */
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Logo styling */
+.navbar .logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.navbar .logo span {
+    color: #00bcd4; /* Accent color for dot */
+}
+
+/* Nav links container */
+.navbar .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+/* Individual links */
+.navbar .nav-links li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    padding: 6px 10px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+/* Hover effect */
+.navbar .nav-links li a:hover {
+    background: #00bcd4; /* Accent background on hover */
+    color: #111;
+}
+
+/* Active link */
+.navbar .nav-links li a.active {
+    border-bottom: 2px solid #00bcd4;
+}
+
+/* Responsive - small screens */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .navbar .nav-links {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+        gap: 10px;
+    }
+    
+    .navbar .nav-links li a {
+        width: 100%;
+    }
+}
+
+/* HERO */
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.hero h1{font-size:3rem;font-weight:800;letter-spacing:2px}
+.hero p{margin-top:10px;color:#aaa}
+.hero .btns{margin-top:20px}
+.btn{padding:10px 20px;border:1px solid #444;margin:5px;border-radius:8px;cursor:pointer;transition:0.3s}
+.btn:hover{background:#fff;color:#000}
+
+/* GRID */
+.section{padding:60px 40px}
+.section h2{margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);padding:20px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);transition:0.3s;cursor:pointer}
+.card:hover{transform:translateY(-5px);border-color:#fff}
+.card h3{margin:10px 0}
+.card p{color:#aaa;font-size:14px}
+
+/* ICON */
+.icon{font-size:28px}
+
+/* TAGS */
+.tags{margin-top:10px}
+.tag{display:inline-block;background:#111;padding:5px 10px;border-radius:6px;font-size:12px;margin-right:5px;border:1px solid #333}
+
+/* TECH BADGES */
+.badges{margin-top:10px}
+.badge{display:inline-block;padding:5px 8px;font-size:11px;border-radius:6px;margin:3px;background:#1a1a1a;border:1px solid #333;color:#ccc}
+
+/* MODAL */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;padding:20px}
+.modal-content{max-width:700px;background:#111;padding:30px;border-radius:12px}
+.close{float:right;cursor:pointer;font-size:20px}
+
+</style>
+</head>
+<body>
+       <nav class="navbar">
+        <div class="logo">STEVEN<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="project.html" class="active">projects </a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li> <a href="cert.html">certificates</a></li>
+           
+
+        </ul>
+    </nav>
+
+<div class="hero">
+<h1>4 year system engineering projects </h1>
+<p>Building scalable infrastructure, AI systems, and backend architectures</p>
+<div class="btns">
+<button class="btn" onclick="scrollToProjects()">View Projects</button>
+</div>
+</div>
+
+<div class="section" id="projects">
+<h2>Projects</h2>
+<div class="grid" id="projectGrid"></div>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">&times;</span>
+<div id="modalData"></div>
+</div>
+</div>
+
+<script>
+const projects=[
+{
+icon:"☁️",
+name:"IaC Infrastructure",
+desc:"Automated cloud infrastructure with CI/CD",
+category:"DevOps",
+technologies:["Terraform","AWS","GitHub Actions"],
+details:"Terraform-based infrastructure with VPC, autoscaling, and CI/CD pipelines."
+},
+{
+icon:"⚙️",
+name:"Distributed Task Queue",
+desc:"Async job processing system",
+category:"Backend",
+technologies:["Node.js","Redis","Docker"],
+details:"Redis-based queue with worker pools, retries, and dead-letter queues."
+},
+{
+icon:"🤖",
+name:"RAG AI Search",
+desc:"AI-powered document querying",
+category:"AI",
+technologies:["Python","Pinecone","OpenAI API"],
+details:"Vector database + LLM pipeline for querying uploaded PDFs."
+},
+{
+icon:"🧑‍💻",
+name:"Collaborative Editor",
+desc:"Real-time multi-user editing",
+category:"Realtime",
+technologies:["Socket.io","Node.js","CRDT"],
+details:"WebSocket-based editor using CRDT/OT for sync."
+},
+{
+icon:"🔐",
+name:"API Gateway",
+desc:"Auth + rate limiting system",
+category:"Security",
+technologies:["JWT","Redis","Node.js"],
+details:"JWT auth with Redis token bucket rate limiting."
+},
+{
+icon:"🗄️",
+name:"Custom DB Engine",
+desc:"Key-value store implementation",
+category:"Core CS",
+technologies:["C++","B-Tree","LSM"],
+details:"Disk-persistent DB with indexing (B-Tree/LSM)."
+}
+];
+
+const grid=document.getElementById('projectGrid');
+projects.forEach(p=>{
+let card=document.createElement('div');
+card.className='card';
+
+let badgesHTML=p.technologies.map(t=>`<span class='badge'>${t}</span>`).join('');
+
+card.innerHTML=`
+<div class='icon'>${p.icon}</div>
+<h3>${p.name}</h3>
+<p>${p.desc}</p>
+<div class='tags'><span class='tag'>${p.category}</span></div>
+<div class='badges'>${badgesHTML}</div>
+`;
+
+card.onclick=()=>openModal(p);
+grid.appendChild(card);
+});
+
+function openModal(p){
+document.getElementById('modal').style.display='flex';
+
+let badgesHTML=p.technologies.map(t=>`<span class='badge'>${t}</span>`).join('');
+
+
+document.getElementById('modalData').innerHTML=`
+<h2>${p.icon} ${p.name}</h2>
+<p>${p.details}</p>
+<div class='badges'>${badgesHTML}</div>
+`;
+}
+
+function closeModal(){
+document.getElementById('modal').style.display='none';
+}
+
+function scrollToProjects(){
+document.getElementById('projects').scrollIntoView({behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

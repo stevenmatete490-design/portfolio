@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CertiVault | View Certificates</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family:'Inter', sans-serif; margin:0; background:#121212; color:#fff; }
+.dashboard { display:flex; height:100vh; }
+.sidebar { width:250px; background:#1a1a1a; padding:1rem; color:#fff; }
+.sidebar .logo { font-size:1.8rem; font-weight:700; margin-bottom:2rem; }
+.sidebar .menu a { display:block; color:#ccc; text-decoration:none; margin:1rem 0; padding:0.5rem; border-radius:5px; }
+.sidebar .menu a.active, .sidebar .menu a:hover { background:#333; color:#fff; }
+.main-content { flex:1; padding:2rem; overflow-y:auto; }
+.topbar h2 { margin:0; font-size:1.6rem; }
+.topbar p { font-size:0.9rem; color:#aaa; margin:0.3rem 0 1rem; }
+.topbar select, .topbar input { padding:0.4rem; border-radius:5px; border:none; }
+.card { background:#1f1f1f; padding:1rem; margin-bottom:1.5rem; border-radius:8px; }
+.card h3 { margin:0.5rem 0; }
+.card .meta { font-size:0.85rem; color:#aaa; margin-bottom:0.5rem; }
+.cert-list { margin-top:0.5rem; }
+.cert-item { padding:0.4rem; border-bottom:1px solid #333; cursor:pointer; }
+.cert-item.no-cert { color:#666; cursor:default; }
+.modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); }
+.modal-content { position:relative; margin:5% auto; width:80%; height:80%; background:#fff; border-radius:8px; overflow:hidden; }
+.modal-content iframe { width:100%; height:100%; }
+.modal .close { position:absolute; top:0.5rem; right:1rem; font-size:2rem; cursor:pointer; }
+#prev-pdf, #next-pdf { position:absolute; top:50%; font-size:2rem; background:none; border:none; color:#fff; cursor:pointer; transform:translateY(-50%); }
+#prev-pdf { left:10px; }
+#next-pdf { right:10px; }
+.footer { text-align:center; margin-top:2rem; color:#888; font-size:0.8rem; }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">Certi<span>Vault</span></div>
+        <nav class="menu">
+            <a href="index.html">🏠 Dashboard</a>
+            <a href="admin.html">📤 Upload Certificates</a>
+            <a href="#" class="active">📂 View Certificates</a>
+            <a href="project.html" class="active">projects </a>
+
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <h2>My Certificates</h2>
+            <p>Click a certificate to preview. Use filters or search to find certificates quickly.</p>
+            <div>
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="communication">Communication</option>
+                    <option value="ai">Artificial Intelligence</option>
+                    <option value="cloud">Cloud Computing</option>
+                    <option value="sales">Sales</option>
+                    <option value="marketing">Marketing</option>
+                </select>
+                <input type="text" id="search-input" placeholder="Search certificates..." style="margin-left:0.5rem;width:200px;">
+            </div>
+        </header>
+
+        <!-- CATEGORY GRID -->
+        <section class="grid" id="cert-grid"></section>
+
+        <footer class="footer">
+            <p>&copy; 2026 CertiVault. All rights reserved. | Designed by Steven Matete</p>
+        </footer>
+
+    </main>
+</div>
+
+<!-- PDF Modal with navigation -->
+<div id="pdf-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <button id="prev-pdf">&#8592;</button>
+        <button id="next-pdf">&#8594;</button>
+        <iframe id="pdf-frame" src="" frameborder="0"></iframe>
+    </div>
+</div>
+
+<script>
+let allCerts = JSON.parse(localStorage.getItem('certificates')) || [];
+let currentPDFIndex = 0;
+let currentCategory = 'all';
+const searchInput = document.getElementById('search-input');
+const categoryFilter = document.getElementById('category-filter');
+
+const categories = [
+  { key:'communication', name:'Communication', desc:'Soft skills, leadership, and public speaking.' },
+  { key:'ai', name:'Artificial Intelligence', desc:'Machine Learning, Neural Networks, AI-related courses.' },
+  { key:'cloud', name:'Cloud Computing', desc:'AWS, Azure, DevOps.' },
+  { key:'sales', name:'Sales', desc:'Negotiation & revenue growth certifications.' },
+  { key:'marketing', name:'Marketing', desc:'SEO, SEM, Branding strategy.' }
+];
+
+// Load certificates dynamically based on filter and search
+function loadCertificates(){
+    const grid = document.getElementById('cert-grid');
+    grid.innerHTML = '';
+    categories.forEach(cat => {
+        if(currentCategory !== 'all' && currentCategory !== cat.key) return;
+        const certsInCategory = allCerts.filter(c => c.category === cat.key &&
+            (c.name.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+             c.description.toLowerCase().includes(searchInput.value.toLowerCase()))
+        );
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div class="icon">💬</div>
+                          <h3>${cat.name}</h3>
+                          <p class="meta">${cat.desc}</p>
+                          <div class="cert-list"></div>`;
+        grid.appendChild(card);
+
+        const list = card.querySelector('.cert-list');
+        if(certsInCategory.length === 0){
+            list.innerHTML = '<div class="cert-item no-cert">No certificates found.</div>';
+        } else {
+            certsInCategory.forEach((cert,i)=>{
+                const div = document.createElement('div');
+                div.className = 'cert-item';
+                div.setAttribute('data-index', allCerts.indexOf(cert));
+                div.innerHTML = `<strong>${cert.name}</strong><p>${cert.description}</p>`;
+                list.appendChild(div);
+            });
+        }
+    });
+
+    attachCertClickEvents();
+}
+
+// Attach click events to open PDFs
+function attachCertClickEvents(){
+    document.querySelectorAll('.cert-item').forEach(item=>{
+        if(item.classList.contains('no-cert')) return;
+        item.onclick = () => {
+            currentPDFIndex = parseInt(item.getAttribute('data-index'));
+            openPDF(currentPDFIndex);
+        };
+    });
+}
+
+function openPDF(index){
+    document.getElementById('pdf-frame').src = allCerts[index].fileData;
+    document.getElementById('pdf-modal').style.display = 'block';
+}
+
+// Modal navigation
+const modal = document.getElementById('pdf-modal');
+const closeBtn = modal.querySelector('.close');
+const prevBtn = document.getElementById('prev-pdf');
+const nextBtn = document.getElementById('next-pdf');
+
+closeBtn.onclick = () => modal.style.display = 'none';
+window.onclick = e => { if(e.target === modal) modal.style.display = 'none'; };
+prevBtn.onclick = () => { if(currentPDFIndex>0){ currentPDFIndex--; openPDF(currentPDFIndex); } };
+nextBtn.onclick = () => { if(currentPDFIndex<allCerts.length-1){ currentPDFIndex++; openPDF(currentPDFIndex); } };
+
+// Filter & Search
+categoryFilter.onchange = e => { currentCategory = e.target.value; loadCertificates(); };
+searchInput.oninput = e => { loadCertificates(); };
+
+// Initial load
+window.onload = loadCertificates;
+</script>
+</body>
+</html>
